@@ -1,6 +1,7 @@
+
 resource "aws_security_group" "alb" {
   name        = "${var.project_name}-alb-sg"
-  description = "Allows public HTTP traffic to the Project 1 ALB"
+  description = "Allows public HTTP traffic to the Project 1 load balancer"
   vpc_id      = aws_vpc.project1.id
 
   ingress {
@@ -25,11 +26,11 @@ resource "aws_security_group" "alb" {
 
 resource "aws_security_group" "web" {
   name        = "${var.project_name}-web-sg"
-  description = "Allows Node.js traffic only from the Project 1 ALB"
+  description = "Allows Node.js traffic only from the Project 1 load balancer"
   vpc_id      = aws_vpc.project1.id
 
   ingress {
-    description     = "Node.js traffic from ALB"
+    description     = "Node.js traffic from ALB only"
     from_port       = var.app_port
     to_port         = var.app_port
     protocol        = "tcp"
@@ -54,7 +55,7 @@ resource "aws_security_group" "db" {
   vpc_id      = aws_vpc.project1.id
 
   ingress {
-    description     = "PostgreSQL from web servers"
+    description     = "PostgreSQL from web servers only"
     from_port       = var.db_port
     to_port         = var.db_port
     protocol        = "tcp"
@@ -79,7 +80,6 @@ resource "aws_security_group" "vpce" {
   vpc_id      = aws_vpc.project1.id
 
   ingress {
-    description     = "HTTPS from web servers"
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
@@ -97,4 +97,3 @@ resource "aws_security_group" "vpce" {
     Name = "${var.project_name}-vpce-sg"
   }
 }
-

@@ -24,9 +24,6 @@ resource "aws_db_instance" "postgres" {
   db_name  = "project1db"
   username = "project1admin"
 
-  password_wo         = var.db_password
-  password_wo_version = 1
-
   port = var.db_port
 
   db_subnet_group_name   = aws_db_subnet_group.project1.name
@@ -36,6 +33,8 @@ resource "aws_db_instance" "postgres" {
   multi_az            = false
 
   iam_database_authentication_enabled = false
-
-  skip_final_snapshot = true
+  deletion_protection                 = true
+  performance_insights_enabled        = true
+  copy_tags_to_snapshot               = true
+  skip_final_snapshot                 = true
 }

@@ -43,7 +43,7 @@ variable "asg_desired_capacity" {
 variable "asg_max_size" {
   description = "Maximum number of EC2 instances in the Auto Scaling Group"
   type        = number
-  default     = 4
+  default     = 3
 }
 
 variable "db_instance_class" {
@@ -92,13 +92,6 @@ variable "private_subnet_2_cidr" {
   description = "CIDR block for Private Subnet 2 in us-east-1b"
   type        = string
   default     = "10.0.144.0/20"
-}
-
-variable "db_password" {
-  description = "Master password for the Project 1 PostgreSQL database"
-  type        = string
-  sensitive   = true
-  ephemeral   = true
 }
 
 variable "ami_id" {

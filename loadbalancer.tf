@@ -1,3 +1,13 @@
+
+# ==================================================
+# AWS PROJECT 1 - APPLICATION LOAD BALANCER
+# HTTP to HTTPS Redirect
+# ==================================================
+
+# --------------------------------------------------
+# 1. APPLICATION LOAD BALANCER
+# --------------------------------------------------
+
 resource "aws_lb" "project1" {
   name               = "${var.project_name}-alb"
   internal           = false
@@ -15,6 +25,11 @@ resource "aws_lb" "project1" {
     Name = "${var.project_name}-alb"
   }
 }
+
+# --------------------------------------------------
+# 2. APPLICATION TARGET GROUP
+# Sends traffic to our Node.js EC2 servers
+# --------------------------------------------------
 
 resource "aws_lb_target_group" "app" {
   name        = "${var.project_name}-app-tg"
@@ -36,24 +51,29 @@ resource "aws_lb_target_group" "app" {
   }
 }
 
+# --------------------------------------------------
+# 3. HTTP LISTENER - PORT 80
+# Automatically redirect visitors to HTTPS
+# --------------------------------------------------
+
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.project1.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    type = "forward"
+    type = "redirect"
 
-    forward {
-      target_group {
-        arn    = aws_lb_target_group.app.arn
-        weight = 1
-      }
-
-      stickiness {
-        enabled  = false
-        duration = 3600
-      }
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
     }
   }
 }
+
+# --------------------------------------------------
+# HTTPS LISTENER - PORT 443
+# Already managed separately in https.tf
+# Do not duplicate it here.
+# --------------------------------------------------
